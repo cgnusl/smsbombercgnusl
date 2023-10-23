@@ -1,7 +1,7 @@
 # SMS Bomber for windows/termux
 
-## Kullanmak için önce node.js yi indirin ardından terminalden npm i yazın.
-## Ardından ise termux kullanıyorsanız node index.js/windows ise direkt başlat.bat ı açmalısınız.
+- Kullanmak için önce node.js yi indirin ardından terminalden npm i yazın.
+- Ardından ise termux kullanıyorsanız node index.js/windows ise direkt başlat.bat ı açmalısınız.
 
 ## Resimler
 
